@@ -11,7 +11,7 @@ import (
 )
 
 
-func TransferTokens(seed string, keyIndex uint64, recipientAddress string, price int64) uint64 {
+func TransferTokens(seed string, keyIndex uint64, recipientAddress string, price uint64) uint64 {
 
 	// get the best available PoW implementation
 	_, proofOfWorkFunc := pow.GetFastestProofOfWorkImpl()
