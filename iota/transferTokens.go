@@ -11,7 +11,7 @@ import (
 )
 
 
-func TransferTokens(seed string, keyIndex uint64, recipientAddress string) uint64 {
+func TransferTokens(seed string, keyIndex uint64, recipientAddress string, amount uint64) uint64 {
 
 	// get the best available PoW implementation
 	_, proofOfWorkFunc := pow.GetFastestProofOfWorkImpl()
@@ -31,7 +31,7 @@ func TransferTokens(seed string, keyIndex uint64, recipientAddress string) uint6
 		{
 			// must be 90 trytes long (include the checksum)
 			Address: recipientAddress,
-			Value:   DefaultAmount,
+			Value:   amount,
 		},
 	}
 
