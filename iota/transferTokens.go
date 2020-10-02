@@ -97,7 +97,7 @@ func TransferTokens(seed string, keyIndex uint64, recipientAddress string, amoun
 
 func must(err error) {
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err[0:19])
 		return
 	}
 }
