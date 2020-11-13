@@ -1,9 +1,9 @@
 package iota
 
-const endpoint = "https://nodes.devnet.iota.org"
+const endpoint = "https://nodes.thetangle.org:443"
 
 // difficulty of the proof of work required to attach a transaction on the tangle
-const mwm = 9
+const mwm = 14
 
 // how many milestones back to start the random walk from
 const depth = 3
