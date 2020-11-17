@@ -61,7 +61,7 @@ func GetApi() *api.API {
     _, powFunc := pow.GetFastestProofOfWorkImpl()
 
     api, err := api.ComposeAPI(api.HTTPClientSettings{
-        URI:                  endpoint,
+        URI:                  Endpoint,
         LocalProofOfWorkFunc: powFunc,
     })
     if err != nil {
