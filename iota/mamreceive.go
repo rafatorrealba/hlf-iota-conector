@@ -16,7 +16,7 @@ func Fetch(root string, mode string, sideKey string) []string {
 	}
 
 	api, err := api.ComposeAPI(api.HTTPClientSettings{
-		URI: endpoint,
+		URI: Endpoint,
 	})
 	if err != nil {
 		log.Fatal(err)
