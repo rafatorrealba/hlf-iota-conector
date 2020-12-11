@@ -15,6 +15,28 @@ import (
     "github.com/iotaledger/iota.go/trinary"
 )
 
+func Check(seed string, ki uint64) (uint64, int, string) {
+    // Connect to a node
+    api, err := ComposeAPI(HTTPClientSettings{URI: node})
+    must(err)
+
+    walletAddress, err := address.GenerateAddress(seed, ki, 2, true)
+	must(err)
+
+    // Get the confirmed balance from the node
+    balances, err := api.GetBalances(trinary.Hashes{walletAddress})
+    
+    //fmt.Println(ki, balances.Balances[0])
+
+    if balances.Balances[0] != 0 {
+        return ki, int(balances.Balances[0]), string(walletAddress)
+
+    } else {
+        return check(seed, (ki + 1))
+    }
+    
+}
+
 func GenerateRandomSeedString(length int) string {
     seed := ""
     alphabet := "ABCDEFGHIJKLMNOPQRSTUVWXYZ9"
@@ -61,7 +83,7 @@ func GetApi() *api.API {
     _, powFunc := pow.GetFastestProofOfWorkImpl()
 
     api, err := api.ComposeAPI(api.HTTPClientSettings{
-        URI:                  Endpoint,
+        URI:                  endpoint,
         LocalProofOfWorkFunc: powFunc,
     })
     if err != nil {

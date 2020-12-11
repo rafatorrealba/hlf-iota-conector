@@ -2,14 +2,15 @@ package iota
 
 import (
 	"fmt"
-	"github.com/iotaledger/iota.go/address"
+
+	"github.com/iotaledger/iota.go/pow"
 	. "github.com/iotaledger/iota.go/api"
 	"github.com/iotaledger/iota.go/bundle"
-	. "github.com/iotaledger/iota.go/consts"
-	"github.com/iotaledger/iota.go/pow"
+	"github.com/iotaledger/iota.go/address"
 	"github.com/iotaledger/iota.go/trinary"
+	. "github.com/iotaledger/iota.go/consts"
+	"github.com/iotaledger/iota.go/converter"
 )
-
 
 func TransferTokens(seed string, keyIndex uint64, recipientAddress string, amount uint64) uint64 {
 
@@ -18,11 +19,14 @@ func TransferTokens(seed string, keyIndex uint64, recipientAddress string, amoun
 
 	// create a new API instance
 	api, err := ComposeAPI(HTTPClientSettings{
-		URI: Endpoint,
+		URI: node,
 		// (!) if no PoWFunc is supplied, then the connected node is requested to do PoW for us
 		// via the AttachToTangle() API call.
 		LocalProofOfWorkFunc: proofOfWorkFunc,
 	})
+	must(err)
+
+	message, err := converter.ASCIIToTrytes("TWINBIOT: New reserve")
 	must(err)
 
 	// create a transfer to the given recipient address
@@ -32,6 +36,7 @@ func TransferTokens(seed string, keyIndex uint64, recipientAddress string, amoun
 			// must be 90 trytes long (include the checksum)
 			Address: recipientAddress,
 			Value:   amount,
+			Message: message,
 		},
 	}
 
@@ -39,7 +44,7 @@ func TransferTokens(seed string, keyIndex uint64, recipientAddress string, amoun
 	walletAddress, err := address.GenerateAddress(seed, keyIndex, SecurityLevelMedium, true)
 	must(err)
 
-	balances, err := api.GetBalances(trinary.Hashes{walletAddress}, 100)
+	balances, err := api.GetBalances(trinary.Hashes{walletAddress})
 	must(err)
 	walletBalance := balances.Balances[0]
 
@@ -73,8 +78,7 @@ func TransferTokens(seed string, keyIndex uint64, recipientAddress string, amoun
 	must(err)
 
 	if spent[0] {
-		fmt.Println("recipient address is spent from, aborting transfer")
-		return keyIndex
+		fmt.Println("recipient address is spent from, aborting transfer", keyIndex)
 	}
 
 	// at this point the bundle trytes are signed.
@@ -87,10 +91,10 @@ func TransferTokens(seed string, keyIndex uint64, recipientAddress string, amoun
 	bndl, err := api.SendTrytes(trytes, depth, mwm)
 	must(err)
 
-	fmt.Println("broadcasted bundle with tail tx hash: ", bundle.TailTransactionHash(bndl))
-	fmt.Println("remainder address: ", remainderAddress)
-	fmt.Println("recipient address: ", recipientAddress)
-	fmt.Println("new key index: ", keyIndex + 1)
+	fmt.Println("Transaction hash:  ", bundle.TailTransactionHash(bndl))
+	fmt.Println("Remainder address: ", remainderAddress)
+	fmt.Println("Recipient address: ", recipientAddress)
+	fmt.Println("New key index:     ", keyIndex + 1)
 
 	return keyIndex + 1
 }
