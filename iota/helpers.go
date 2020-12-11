@@ -32,7 +32,7 @@ func Check(seed string, ki uint64) (uint64, int, string) {
         return ki, int(balances.Balances[0]), string(walletAddress)
 
     } else {
-        return check(seed, (ki + 1))
+        return Check(seed, (ki + 1))
     }
     
 }
