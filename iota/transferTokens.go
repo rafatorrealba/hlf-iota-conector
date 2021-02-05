@@ -18,7 +18,7 @@ func TransferTokens(seed string, keyIndex uint64, recipientAddress string, amoun
 
 	// create a new API instance
 	api, err := ComposeAPI(HTTPClientSettings{
-		URI: Endpoint,
+		URI: "https://nodes.thetangle.org:443",
 		// (!) if no PoWFunc is supplied, then the connected node is requested to do PoW for us
 		// via the AttachToTangle() API call.
 		LocalProofOfWorkFunc: proofOfWorkFunc,
