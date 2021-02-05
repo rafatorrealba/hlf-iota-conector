@@ -84,7 +84,7 @@ func TransferTokens(seed string, keyIndex uint64, recipientAddress string, amoun
 	// 3. broadcast the bundle
 	// 4. store the bundle
 	// SendTrytes() conveniently does the steps above for us.
-	bndl, err := api.SendTrytes(trytes, depth, mwm)
+	bndl, err := api.SendTrytes(trytes, depth, 14)
 	must(err)
 
 	fmt.Println("broadcasted bundle with tail tx hash: ", bundle.TailTransactionHash(bndl))
